@@ -6,6 +6,7 @@ t_ignore = ' \t'
 reserved = {
 	'adds': 'PLUS',
 	'creams': 'TIMES',
+	'minus': 'MINUS',
 	'pump': 'EQUALS',
 	'squirt': 'PRINT',
 	'blow': 'WHILE',

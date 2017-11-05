@@ -1,11 +1,14 @@
 import ply.yacc as yacc
 import lexer
 from pprint import pprint
+from nodes import *
+import nodes
+from funcs import *
 
 tokens=lexer.tokens
 
 precedence = (
-	('left', 'PLUS'),
+	('left', 'PLUS', 'MINUS'),
 	('left', 'TIMES'),
 	('left', 'INDEX')
 )
@@ -14,9 +17,10 @@ def p_block(p):
 	'''block : block statement
 			 | statement'''
 	if len(p)==3:
-		p[0] = p[1] + (p[2],)
+		p[1].append_child(p[2])
+		p[0] = p[1]
 	else:
-		p[0] = ('BLOCK', p[1])
+		p[0] = Block(p[1])
 
 def p_statement(p):
 	'''statement : assign
@@ -45,7 +49,7 @@ def p_else(p):
 
 def p_while(p):
 	'''while : WHILE expr block ENDWHILE'''
-	p[0] = ('WHILE', p[2], p[3])
+	p[0] = While(p[2], p[3])
 
 def p_funcdef(p):
 	'''funcdef : FUNC block ENDFUNC'''
@@ -57,21 +61,19 @@ def p_return(p):
 
 def p_print(p):
 	'''print : PRINT expr'''
-	p[0] = ('PRINT', p[2])
+	p[0] = Unary(operators[p[1]], p[2])
 
 def p_binary(p):
 	'''expr : expr PLUS expr
+			| expr MINUS expr
 			| expr TIMES expr'''
-	if p[2]=='PLUS':
-		p[0] = ('PLUS', p[1], p[3])
-	if p[2]=='TIMES':
-		p[0] = ('TIMES', p[1], p[3])
+	p[0] = Binary(operators[p[2]], p[1], p[3])
 
 def p_literal(p):
 	'''expr : INT
 			| FLOAT
 			| STRING'''
-	p[0] = p[1][1:-1]if isinstance(p[1], str) else p[1]
+	p[0] = Literal(p[1][1:-1]if isinstance(p[1], str) else p[1])
 
 def p_parens(p):
 	'''expr : LPAREN expr RPAREN'''
@@ -79,11 +81,11 @@ def p_parens(p):
 
 def p_name(p):
 	'''expr : NAME'''
-	p[0] = ('SYMBOL_LOOKUP', p[1])
+	p[0] = Symbol_Lookup(p[1])
 
 def p_assign(p):
 	'''assign : NAME EQUALS expr'''
-	p[0] = ('ASSIGN', p[1], p[3])
+	p[0] = Assign(p[1], p[3])
 
 def p_getitem(p):
 	'''getitem : expr INDEX expr'''
@@ -99,18 +101,11 @@ def p_setitem(p):
 
 parser=yacc.yacc()
 
-pprint(parser.parse('''abc pump (.7E-2 adds 8) creams 9
-def pump 9 adds abc
-x pump 0
-BLOW x
-	x pump x adds 1
-	squirt'hello how are you '
-FACIal
-consent 0 yes
-SQUIRT 4
-consent 1 yes
-SQUIRT 5
-rp
-SQUIRT 7
-shot
-'''), width=4)
+root = parser.parse('''
+x pump 0 minus 10
+blow x
+squirt (x adds 10) creams 5
+x pump x adds 1
+facial''')
+nodes.env = {}
+root.eval()
