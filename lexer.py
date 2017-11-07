@@ -6,19 +6,23 @@ t_ignore = ' \t'
 reserved = {
 	'adds': 'PLUS',
 	'creams': 'TIMES',
-	'minus': 'MINUS',
+	'dumps': 'MINUS',
 	'pump': 'EQUALS',
 	'squirt': 'PRINT',
 	'blow': 'WHILE',
 	'facial': 'ENDWHILE',
 	'consent': 'IF',
+	'just': 'ELIF',
 	'rp': 'ELSE',
 	'shot': 'ENDIF',
 	'raw': 'FUNC',
 	'pull': 'ENDFUNC',
 	'lick': 'INDEX',
 	'yes': 'STARTIF',
-	'thrust': 'RETURN'
+	'thrust': 'RETURN',
+	'pop': 'BREAK1',
+	'cherry': 'BREAK2',
+	'harder': 'CONTINUE'
 }
 
 tokens = ['NAME', 'INT', 'FLOAT', 'STRING', 'COMMA', 'LPAREN', 'RPAREN', 'newline'] + list(reserved.values())
