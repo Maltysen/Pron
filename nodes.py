@@ -2,8 +2,6 @@ CONTINUE = object()
 BREAK = object()
 RETURN = type('Return Value', (), {})
 
-env = {}
-
 class Node(object):
 	def __init__(self, *children):
 		*self.children, = children
@@ -63,12 +61,13 @@ class If_Chain(Node):
 class Funcdef(Node):
 	def eval(self):
 		def defined_func(vals):
+			global env
+
 			old_env = env.copy()
 			env.update(dict(zip(self.children[1], vals)))
 
 			v = self.children[2].eval()
 
-			global env
 			env = old_env
 
 			if isinstance(v, RETURN):
