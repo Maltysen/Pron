@@ -4,6 +4,7 @@ from pprint import pprint
 from nodes import *
 import nodes
 from funcs import *
+import argparse
 
 tokens=lexer.tokens
 
@@ -136,63 +137,21 @@ def p_call(p):
 	'''expr : expr LPAREN valseq RPAREN'''
 	p[0] = Call(p[1], p[3])
 
-parser=yacc.yacc()
+def p_error(p):
+	raise SyntaxError("Invalid Syntax")
 
-root = parser.parse('''
-x pump 0
-blow x dumps 10
-	squirt x creams 5
-	squirt "helloworld" lick x
-	x pump x adds 1
-facial
+def run(code):
+	parser=yacc.yacc(errorlog=yacc.NullLogger())
+	root = parser.parse(code)
+	
+	nodes.env = {}
+	root.eval()
 
-squirt""
+if __name__=='__main__':
+	parser = argparse.ArgumentParser(description = 'XXX version 0.9 interpreter. Made by perverts, for perverts.')
 
-consent 0 creams 10 yes
-	squirt "b1"
-just 1 yes
-	squirt "b2"
-rp
-	squirt "else"
-shot
+	parser.add_argument('file', type=argparse.FileType('r'), help='Input file with code to run.')
+	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.9')
 
-squirt""
-
-y pump 0
-blow 1
-	squirt y
-	y pump y adds 1
-	consent y dumps 5 yes
-		"pass"
-	rp
-		consent 7 yes
-			harder
-		shot
-	shot
-	squirt"blah"
-	consent y dumps 10 yes
-		"pass"
-	rp
-		pop CHERRY
-	shot
-facial
-
-squirt""
-
-raw my_func (a, b, c)
-	consent a yes
-		thrust a adds b adds c
-	rp thrust 2 creams (b adds c) shot
-pull
-
-a pump 7
-squirt a
-squirt my_func(1, 2, a) creams 3
-squirt my_func(0, 10, 10)
-squirt a
-squirt""
-
-squirt "end"
-''')
-nodes.env = {}
-root.eval()
+	args = parser.parse_args()
+	run(args.file.read())

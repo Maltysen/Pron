@@ -2,6 +2,8 @@ CONTINUE = object()
 BREAK = object()
 RETURN = type('Return Value', (), {})
 
+env = {}
+
 class Node(object):
 	def __init__(self, *children):
 		*self.children, = children

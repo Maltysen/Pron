@@ -52,4 +52,7 @@ def t_NAME(t):
 	t.value = t.value if t.type=='NAME' else t.type
 	return t
 
+def t_error(t):
+	raise SyntaxError("Illegal character '%s'" % t.value[0])
+
 lexer = lex.lex()

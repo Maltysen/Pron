@@ -20,4 +20,6 @@ Please help me make this a reality ( ͡° ͜ʖ ͡°)
 - Error reporting
 - Custom type system
 - Whitespace/newline rules
-- OOP?
+- Comments
+- Signals (SIGINT, SIGKILL)
+- REPL
